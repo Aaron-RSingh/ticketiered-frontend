@@ -9,7 +9,6 @@ export default class EventDetail extends Component {
 
   componentDidMount() {
     // debugger;
-    console.log(this.props);
     const token = localStorage.getItem("access_token");
     if (!token) {
       // this.props.history.push('/login')
@@ -90,13 +89,13 @@ export default class EventDetail extends Component {
                   <hr />
                 </>
               )}
-              <hr />
-              {tickets &&
-                tickets.map(ticket => {
+              {/* <hr /> */}
+              {event.tickets &&
+                event.tickets.map(ticket => {
                   return (
                     <div
                       class="p-3 mb-2 bg-secondary text-white"
-                      style={{ margin: "1rem" }}
+                      style={{ margin: "1rem" }} key={ticket.id}
                     >
                       Ticket class: {ticket.ticket_class}
                       <br />
