@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import EventDetail from "./eventDetail";
 
 export default class Event extends Component {
   state = {
+    event: {},
     tickets: [],
     new_ticket_class: "",
     new_description: "",
@@ -15,15 +17,16 @@ export default class Event extends Component {
   }
 
   fetchAllTickets = () => {
-    const { id } = this.props;
+    // debugger;
     const token = localStorage.getItem("access_token");
-    fetch(`http://localhost:3000/events/${id}/tickets`, {
+    fetch(`http://localhost:3000/events/${this.props.id}`, {
       headers: { Authorization: token }
     })
+      // .then(res => console.log(res))
       .then(res => res.json())
       .then(res => {
         this.setState({
-          tickets: res
+          event: res
         });
       });
   };
@@ -91,7 +94,7 @@ export default class Event extends Component {
     const token = localStorage.getItem("access_token");
     const self = this;
     fetch(`http://localhost:3000/tickets/${updateTicketId}`, {
-      method: "POST",
+      method: "PUT",
       body: JSON.stringify({
         ticket_class: new_ticket_class,
         description: new_description,
@@ -149,8 +152,7 @@ export default class Event extends Component {
       <div className="card">
         <div className="card-header">{name}</div>
         <div className="card-body">
-          {/* how to put image in src tag, this?  */}
-          <img src={imageurl} />
+          <img src={imageurl} key={id} />
           <h5 className="card-title">Location: {location}</h5>
           <p className="card-text">{description}</p>
           <Link
@@ -160,6 +162,7 @@ export default class Event extends Component {
             }}
           >
             View detail
+
           </Link>
           {isEdit && (
             <button
@@ -187,6 +190,7 @@ export default class Event extends Component {
                     <div
                       class="p-3 mb-2 bg-secondary text-white"
                       style={{ margin: "1rem" }}
+                      key={ticket.id}
                     >
                       Ticket class: {ticket.ticket_class}
                       <br />

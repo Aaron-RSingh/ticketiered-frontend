@@ -1,21 +1,25 @@
 import React, { Component } from "react";
 import Navbar from "./navbar";
+import Event from "./event";
 
 export default class EventDetail extends Component {
   state = {
     event: {}
   };
+
   componentDidMount() {
+    // debugger;
+    console.log(this.props);
     const token = localStorage.getItem("access_token");
     if (!token) {
       // this.props.history.push('/login')
     }
-    const {
-      match: { params }
-    } = this.props;
-    this.fetchEventDetail(params.id);
-    this.fetchAllTickets(params.id);
+    // debugger;
+    const eventId = this.props.match.params.id;
+    this.fetchEventDetail(eventId);
+    // this.fetchAllTickets(event.id);
   }
+
   logout = e => {
     e.preventDefault();
     localStorage.removeItem("access_token");
@@ -24,7 +28,6 @@ export default class EventDetail extends Component {
 
   fetchEventDetail = id => {
     const token = localStorage.getItem("access_token");
-
     fetch(`http://localhost:3000/events/${id}`, {
       headers: { Authorization: token }
     })
@@ -32,24 +35,30 @@ export default class EventDetail extends Component {
       .then(res => {
         console.log(res);
         this.setState({
-          event: res
+          event: res.event
         });
       });
   };
 
   fetchAllTickets = id => {
+    console.log(this.props);
+    debugger;
     const token = localStorage.getItem("access_token");
-    fetch(`http://localhost:3000/events/${id}/tickets`, {
-      headers: { Authorization: token }
+    fetch(`http://localhost:3000/events/${id}`, {
+      headers: { Authorization: `bearer ${token}` }
     })
       .then(res => res.json())
-      .then(res => console.log(res))
       .then(res => {
-        this.setState({
-          tickets: res
-        });
+        debugger;
+        console.log(res);
       });
   };
+
+  filterTickets = () => {
+    // const allTickets = this.state
+    console.log(this.state);
+  };
+
   render() {
     const { event, tickets } = this.state;
     return (

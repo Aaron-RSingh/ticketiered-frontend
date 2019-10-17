@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Navbar from "./navbar";
 import Event from "./event";
+// import EventDetail from "./eventDetail";
 
 export default class Home extends Component {
   state = {
@@ -15,12 +16,7 @@ export default class Home extends Component {
         headers: { Authorization: token }
       })
         .then(res => res.json())
-        .then(res => {
-          console.log(res);
-          this.setState({
-            events: res
-          });
-        });
+        .then(data => this.setState({ events: [...data] }));
     }
   }
 
@@ -40,17 +36,15 @@ export default class Home extends Component {
   render() {
     const { events } = this.state;
     const all = events.map((event, key) => (
-      <>
-        <Event
-          name={event.name}
-          location={event.location}
-          description={event.description}
-          id={event.id}
-          imageurl={event.image_url}
-        />
-        <br />
-      </>
+      <Event
+        name={event.name}
+        location={event.location}
+        description={event.description}
+        id={event.id}
+        imageurl={event.image_url}
+      />
     ));
+
     return (
       <div>
         <Navbar logout={this.logout} />

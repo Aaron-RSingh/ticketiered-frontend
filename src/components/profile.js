@@ -53,7 +53,6 @@ export default class Profile extends Component {
     })
       .then(res => res.json())
       .then(res => {
-        console.log(res);
         this.setState({
           user: res
         });
@@ -249,7 +248,7 @@ export default class Profile extends Component {
                       </div>
                       <div className="form-group">
                         <input
-                          type="text"
+                          type="date"
                           className="form-control"
                           aria-describedby="emailHelp"
                           placeholder="Time-date"
