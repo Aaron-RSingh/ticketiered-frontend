@@ -1,6 +1,6 @@
 import React, { Component } from "react";
+import {  Link } from 'react-router-dom';
 import Navbar from "./navbar";
-import Event from "./event";
 
 export default class EventDetail extends Component {
   state = {
@@ -8,7 +8,6 @@ export default class EventDetail extends Component {
   };
 
   componentDidMount() {
-    // debugger;
     const token = localStorage.getItem("access_token");
     if (!token) {
       // this.props.history.push('/login')
@@ -41,14 +40,12 @@ export default class EventDetail extends Component {
 
   fetchAllTickets = id => {
     console.log(this.props);
-    debugger;
     const token = localStorage.getItem("access_token");
     fetch(`http://localhost:3000/events/${id}`, {
       headers: { Authorization: `bearer ${token}` }
     })
       .then(res => res.json())
       .then(res => {
-        debugger;
         console.log(res);
       });
   };
@@ -59,7 +56,7 @@ export default class EventDetail extends Component {
   };
 
   render() {
-    const { event, tickets } = this.state;
+    const { event } = this.state;
     return (
       <div>
         <Navbar logout={this.logout} />
@@ -94,8 +91,9 @@ export default class EventDetail extends Component {
                 event.tickets.map(ticket => {
                   return (
                     <div
-                      class="p-3 mb-2 bg-secondary text-white"
-                      style={{ margin: "1rem" }} key={ticket.id}
+                      className="p-3 mb-2 bg-secondary text-white"
+                      style={{ margin: "1rem" }}
+                      key={ticket.id}
                     >
                       Ticket class: {ticket.ticket_class}
                       <br />
@@ -105,6 +103,7 @@ export default class EventDetail extends Component {
                       <br />
                       Ticket price: £{ticket.price}
                       <br />
+                      <Link className="btn btn-outline-success my-2 my-sm-0" to="/tickets/1" >Purchase Ticket</Link>
                     </div>
                   );
                 })}

@@ -30,7 +30,6 @@ export default class Profile extends Component {
     fetch("http://localhost:3000/events", { headers: { Authorization: token } })
       .then(res => res.json())
       .then(res => {
-        console.log(res);
         this.setState(
           {
             events: res
@@ -190,6 +189,7 @@ export default class Profile extends Component {
           name={event.name}
           location={event.location}
           description={event.description}
+          datetime={event.date_time}
           id={event.id}
           isEdit={true}
           deleteEvent={this.deleteEvent}
@@ -214,14 +214,14 @@ export default class Profile extends Component {
 
           <div className="row">
             <div className="col">
-              <h3>My events</h3>
-              {myEvents ? myEvents : <h3>No event yet</h3>}
+              <h1>My events</h1>
+              {myEvents.length ? myEvents : <h5>No events yet</h5>}
             </div>
             <div className="col">
               <div className="container">
                 <div className="row">
                   <div className="col">
-                    {!update ? <h3>Create new one</h3> : <h3>Update form</h3>}
+                    {!update ? <h3>Create An Event!</h3> : <h3>Update form</h3>}
                     <br />
                     <form>
                       <div className="form-group">

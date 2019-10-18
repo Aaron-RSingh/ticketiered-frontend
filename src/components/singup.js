@@ -48,7 +48,7 @@ export default class Signup extends Component {
             <br />
             <br />
             <br />
-            <h1>Already Account?</h1>
+            <h2>Already Have An Account?</h2>
             <Link to="/login" className="btn btn-outline-success">
               Sign in
             </Link>

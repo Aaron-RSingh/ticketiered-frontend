@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
-import EventDetail from "./eventDetail";
 
 export default class Event extends Component {
   state = {
@@ -13,20 +12,20 @@ export default class Event extends Component {
     update: false
   };
   componentDidMount() {
-    this.fetchAllTickets();
+    const eventId = this.props.id;
+    this.fetchAllTickets(eventId);
   }
 
-  fetchAllTickets = () => {
-    // debugger;
+  fetchAllTickets = id => {
     const token = localStorage.getItem("access_token");
-    fetch(`http://localhost:3000/events/${this.props.id}`, {
+    fetch(`http://localhost:3000/events/${id}`, {
       headers: { Authorization: token }
     })
-      // .then(res => console.log(res))
       .then(res => res.json())
       .then(res => {
+        console.log(res);
         this.setState({
-          event: res
+          event: res.event
         });
       });
   };
@@ -46,6 +45,7 @@ export default class Event extends Component {
     } = this.state;
     const token = localStorage.getItem("access_token");
     const self = this;
+    debugger;
     fetch(`http://localhost:3000/events/${id}/tickets`, {
       method: "post",
       body: JSON.stringify({
@@ -64,7 +64,7 @@ export default class Event extends Component {
           new_availability: "",
           new_price: ""
         });
-        self.fetchAllTickets();
+        self.fetchAllTickets(id);
       });
   };
 
@@ -138,7 +138,15 @@ export default class Event extends Component {
     });
   };
   render() {
-    const { name, imageurl, description, id, location, isEdit } = this.props;
+    const {
+      name,
+      imageurl,
+      description,
+      id,
+      location,
+      isEdit,
+      datetime
+    } = this.props;
     const {
       new_ticket_class,
       new_description,
@@ -147,13 +155,15 @@ export default class Event extends Component {
       update
     } = this.state;
 
-    const { tickets } = this.state;
+    const { event } = this.state;
+
     return (
       <div className="card">
         <div className="card-header">{name}</div>
         <div className="card-body">
-          <img src={imageurl} key={id} />
-          <h5 className="card-title">Location: {location}</h5>
+          <img src={imageurl} key={id} alt="" />
+          <h4 className="card-title">Location: {location}</h4>
+          <h6 className="card-date">Date: {datetime}</h6>
           <p className="card-text">{description}</p>
           <Link
             className="btn btn-outline-success"
@@ -162,7 +172,6 @@ export default class Event extends Component {
             }}
           >
             View detail
-
           </Link>
           {isEdit && (
             <button
@@ -184,11 +193,11 @@ export default class Event extends Component {
               <br />
               <hr />
               Tickets
-              {tickets &&
-                tickets.map(ticket => {
+              {event.tickets &&
+                event.tickets.map(ticket => {
                   return (
                     <div
-                      class="p-3 mb-2 bg-secondary text-white"
+                      class="p-6 mb-2 bg-secondary text-white"
                       style={{ margin: "1rem" }}
                       key={ticket.id}
                     >
