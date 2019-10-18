@@ -13,10 +13,10 @@ export default class Event extends Component {
   };
   componentDidMount() {
     const eventId = this.props.id;
-    this.fetchAllTickets(eventId);
+    this.fetchAllEventInfo(eventId);
   }
 
-  fetchAllTickets = id => {
+  fetchAllEventInfo = id => {
     const token = localStorage.getItem("access_token");
     fetch(`http://localhost:3000/events/${id}`, {
       headers: { Authorization: token }
@@ -45,7 +45,6 @@ export default class Event extends Component {
     } = this.state;
     const token = localStorage.getItem("access_token");
     const self = this;
-    debugger;
     fetch(`http://localhost:3000/events/${id}/tickets`, {
       method: "post",
       body: JSON.stringify({
@@ -64,14 +63,14 @@ export default class Event extends Component {
           new_availability: "",
           new_price: ""
         });
-        self.fetchAllTickets(id);
+        self.fetchAllEventInfo(id);
       });
   };
 
   updateState = (e, id) => {
     e.preventDefault();
-    const { tickets } = this.state;
-    const filterResult = tickets.filter(ticket => ticket.id === id);
+    const { event } = this.state;
+    const filterResult = event.tickets.filter(ticket => ticket.id === id);
     this.setState({
       new_price: filterResult[0].price,
       new_availability: filterResult[0].availability,
@@ -82,7 +81,7 @@ export default class Event extends Component {
     });
   };
 
-  updateTikcet = e => {
+  updateTicket = e => {
     e.preventDefault();
     const {
       new_ticket_class,
@@ -112,7 +111,7 @@ export default class Event extends Component {
           new_price: "",
           update: false
         });
-        self.fetchAllTickets();
+        self.fetchAllEventInfo(res.event_id);
       });
   };
 
@@ -162,7 +161,7 @@ export default class Event extends Component {
         <div className="card-header">{name}</div>
         <div className="card-body">
           <img src={imageurl} key={id} alt="" />
-          <h4 className="card-title">Location: {location}</h4>
+          <h6 className="card-title">Location: {location}</h6>
           <h6 className="card-date">Date: {datetime}</h6>
           <p className="card-text">{description}</p>
           <Link
@@ -176,7 +175,7 @@ export default class Event extends Component {
           {isEdit && (
             <button
               style={{ margin: "1rem" }}
-              className="btn btn-outline-success"
+              className="btn btn-outline-success my-2 my-sm-0"
               onClick={e => this.props.updateState(e, id)}
             >
               Edit
@@ -185,7 +184,7 @@ export default class Event extends Component {
           {isEdit && (
             <>
               <button
-                className="btn btn-outline-success"
+                className="btn btn-outline-success my-2 my-sm-0"
                 onClick={e => this.props.deleteEvent(e, id)}
               >
                 Delete
@@ -197,7 +196,7 @@ export default class Event extends Component {
                 event.tickets.map(ticket => {
                   return (
                     <div
-                      class="p-6 mb-2 bg-secondary text-white"
+                      className="p-6 mb-2 bg-secondary text-white"
                       style={{ margin: "1rem" }}
                       key={ticket.id}
                     >
@@ -299,7 +298,7 @@ export default class Event extends Component {
                   <button
                     style={{ margin: "1rem" }}
                     className="btn btn-outline-primary"
-                    onClick={this.updateTikcet}
+                    onClick={this.updateTicket}
                   >
                     Update
                   </button>

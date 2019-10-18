@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {  Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import Navbar from "./navbar";
 
 export default class EventDetail extends Component {
@@ -12,7 +12,6 @@ export default class EventDetail extends Component {
     if (!token) {
       // this.props.history.push('/login')
     }
-    // debugger;
     const eventId = this.props.match.params.id;
     this.fetchEventDetail(eventId);
     // this.fetchAllTickets(event.id);
@@ -50,9 +49,19 @@ export default class EventDetail extends Component {
       });
   };
 
-  filterTickets = () => {
-    // const allTickets = this.state
-    console.log(this.state);
+  createUserTicket = ticket_id => {
+    // debugger;
+    console.log(ticket_id);
+    fetch("http://localhost:3000/usertickets", {
+      method: "POST",
+      body: JSON.stringify({ ticket_id }),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: localStorage.access_token
+      }
+    })
+      .then(resp => resp.json())
+      .then(resp => console.log(resp));
   };
 
   render() {
@@ -103,7 +112,12 @@ export default class EventDetail extends Component {
                       <br />
                       Ticket price: £{ticket.price}
                       <br />
-                      <Link className="btn btn-outline-success my-2 my-sm-0" to="/tickets/1" >Purchase Ticket</Link>
+                      <Link
+                        className="btn btn-outline-success my-2 my-sm-0"
+                        onClick={() => this.createUserTicket(ticket.id)}
+                      >
+                        Reserve Ticket
+                      </Link>
                     </div>
                   );
                 })}

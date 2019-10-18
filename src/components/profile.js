@@ -47,7 +47,7 @@ export default class Profile extends Component {
 
   getUser = () => {
     const token = localStorage.getItem("access_token");
-    fetch(`http://localhost:3000/user-info`, {
+    fetch("http://localhost:3000/user-info", {
       headers: { Authorization: token }
     })
       .then(res => res.json())
@@ -214,7 +214,7 @@ export default class Profile extends Component {
 
           <div className="row">
             <div className="col">
-              <h1>My events</h1>
+              <h2>My events</h2>
               {myEvents.length ? myEvents : <h5>No events yet</h5>}
             </div>
             <div className="col">

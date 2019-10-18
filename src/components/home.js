@@ -20,12 +20,10 @@ export default class Home extends Component {
     }
   }
 
-  fetchAllEvents = () => {};
-
-  logout = e => {
-    e.preventDefault();
-    this.props.history.push("/login");
-  };
+  // logout = e => {
+  //   e.preventDefault();
+  //   this.props.history.push("/login");
+  // };
 
   logout = e => {
     e.preventDefault();

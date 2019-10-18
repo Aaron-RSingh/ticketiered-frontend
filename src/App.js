@@ -36,7 +36,7 @@ class App extends React.Component {
       });
   };
   logout = () => {
-    // const token = localStorage.getItem("access_token");
+    const token = localStorage.getItem("access_token");
     fetch("http://localhost:3000/events")
       .then(res => res.json())
       .then(res => {

@@ -26,6 +26,7 @@ export default class Signup extends Component {
     fetch("http://localhost:3000/users", {
       method: "POST",
       body: JSON.stringify({
+        
         username: username,
         password: password,
         primary_location: primaryLocation

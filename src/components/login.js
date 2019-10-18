@@ -34,6 +34,7 @@ export default class Login extends Component {
     })
       .then(res => res.json())
       .then(res => {
+        debugger
         const jwt = res.auth_token;
         localStorage.setItem("access_token", jwt);
         this.props.history.push("/");
