@@ -50,7 +50,6 @@ export default class EventDetail extends Component {
   };
 
   createUserTicket = ticket_id => {
-    // debugger;
     console.log(ticket_id);
     fetch("http://localhost:3000/usertickets", {
       method: "POST",

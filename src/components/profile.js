@@ -13,7 +13,9 @@ export default class Profile extends Component {
     update: false,
     user: {},
     ticketCounter: 0,
-    tickets: {}
+    tickets: {},
+    ticketInfo: [],
+    createdEvents: true
   };
   componentDidMount() {
     const token = localStorage.getItem("access_token");
@@ -46,7 +48,6 @@ export default class Profile extends Component {
   };
 
   getUserInfo = () => {
-    const state = this.state;
     const token = localStorage.getItem("access_token");
     fetch("http://localhost:3000/user-info", {
       headers: { Authorization: token }
@@ -56,11 +57,20 @@ export default class Profile extends Component {
         this.setState({
           user: res
         });
-      })
-      .then(res => console.log(state));
+      });
   };
 
-
+  getUsertickets = () => {
+    const id = this.state.user.id;
+    fetch(`http://localhost:3000/users/${id}`)
+      .then(resp => resp.json())
+      .then(resp => {
+        this.setState({
+          ticketInfo: resp.event.complete_user.tickets
+        });
+      })
+      .then(() => console.log(this.state));
+  };
 
   createNewEvent = e => {
     e.preventDefault();
@@ -208,14 +218,16 @@ export default class Profile extends Component {
         <Navbar logout={this.logout} />
         <br />
         <br />
-
         <div className="container">
           <h2>Welcome! {user && user.username}</h2>
           <p>{user && user.primary_location}</p>
           <hr />
           <br />
           <br />
-
+          <div>
+            <h4>What events am I going to already?</h4>
+            <button onClick={this.getUsertickets}>Events</button>
+          </div>
           <div className="row">
             <div className="col">
               <h2>My events</h2>
@@ -229,80 +241,31 @@ export default class Profile extends Component {
                     <br />
                     <form>
                       <div className="form-group">
-                        <input
-                          type="text"
-                          className="form-control"
-                          aria-describedby="emailHelp"
-                          placeholder="Name"
-                          name="name"
-                          value={name}
-                          onChange={this.handlechange}
-                        />
+                        <input type="text" className="form-control" aria-describedby="emailHelp" placeholder="Name" name="name" value={name} onChange={this.handlechange} />
+                      </div>
+                      <div className="form-group">
+                        <input type="text" className="form-control" aria-describedby="emailHelp" placeholder="Location" name="location" value={location} onChange={this.handlechange} />
                       </div>
                       <div className="form-group">
                         <input
-                          type="text"
-                          className="form-control"
-                          aria-describedby="emailHelp"
-                          placeholder="Location"
-                          name="location"
-                          value={location}
-                          onChange={this.handlechange}
-                        />
+                          type="date" className="form-control" aria-describedby="emailHelp" placeholder="Time-date" name="date_time" value={date_time} onChange={this.handlechange} />
                       </div>
                       <div className="form-group">
-                        <input
-                          type="date"
-                          className="form-control"
-                          aria-describedby="emailHelp"
-                          placeholder="Time-date"
-                          name="date_time"
-                          value={date_time}
-                          onChange={this.handlechange}
-                        />
+                        <input type="text" className="form-control" aria-describedby="emailHelp" placeholder="Description" name="description" value={description} onChange={this.handlechange} />
                       </div>
                       <div className="form-group">
-                        <input
-                          type="text"
-                          className="form-control"
-                          aria-describedby="emailHelp"
-                          placeholder="Description"
-                          name="description"
-                          value={description}
-                          onChange={this.handlechange}
-                        />
-                      </div>
-                      <div className="form-group">
-                        <input
-                          type="text"
-                          className="form-control"
-                          aria-describedby="emailHelp"
-                          placeholder="Image Url"
-                          name="image_url"
-                          value={image_url}
-                          onChange={this.handlechange}
-                        />
+                        <input type="text" className="form-control" aria-describedby="emailHelp" placeholder="Image Url" name="image_url" value={image_url} onChange={this.handlechange} />
                       </div>
                       {!update ? (
-                        <button
-                          className="btn btn-outline-success"
-                          onClick={this.createNewEvent}
-                        >
+                        <button className="btn btn-outline-success" onClick={this.createNewEvent} >
                           Create
                         </button>
                       ) : (
                         <span>
-                          <button
-                            className="btn btn-outline-success"
-                            style={{ margin: "1rem" }}
-                            onClick={this.updateEvent}
-                          >
+                          <button className="btn btn-outline-success" style={{ margin: "1rem" }} onClick={this.updateEvent} >
                             Update
                           </button>
-                          <button
-                            className="btn btn-outline-success"
-                            onClick={this.cancelUpdate}
-                          >
+                          <button className="btn btn-outline-success" onClick={this.cancelUpdate} >
                             cancel
                           </button>
                         </span>
