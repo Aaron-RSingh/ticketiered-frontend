@@ -35,7 +35,7 @@ export default class Profile extends Component {
             events: res
           },
           () => {
-            this.getUser();
+            this.getUserInfo();
           }
         );
       });
@@ -45,7 +45,8 @@ export default class Profile extends Component {
     this.setState({ [e.target.name]: e.target.value });
   };
 
-  getUser = () => {
+  getUserInfo = () => {
+    const state = this.state;
     const token = localStorage.getItem("access_token");
     fetch("http://localhost:3000/user-info", {
       headers: { Authorization: token }
@@ -55,8 +56,11 @@ export default class Profile extends Component {
         this.setState({
           user: res
         });
-      });
+      })
+      .then(res => console.log(state));
   };
+
+
 
   createNewEvent = e => {
     e.preventDefault();
