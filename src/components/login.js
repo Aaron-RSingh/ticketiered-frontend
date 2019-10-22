@@ -50,6 +50,7 @@ export default class Login extends Component {
             <br />
             <br />
             <h1>Ticketiered</h1>
+            <p>blurb about what the app is</p>
             <Link to="/signup" className="btn btn-outline-success">
               Sign up
             </Link>

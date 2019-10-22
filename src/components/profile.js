@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import Navbar from "./navbar";
 import Event from "./event";
+import Ticket from "./ticket";
+import EventForm from "./eventForm";
 
 export default class Profile extends Component {
   state = {
@@ -15,7 +17,8 @@ export default class Profile extends Component {
     ticketCounter: 0,
     tickets: {},
     ticketInfo: [],
-    createdEvents: true
+    eventsToggle: true,
+    selectedTab: "attending"
   };
   componentDidMount() {
     const token = localStorage.getItem("access_token");
@@ -54,22 +57,15 @@ export default class Profile extends Component {
     })
       .then(res => res.json())
       .then(res => {
-        this.setState({
-          user: res
-        });
+        this.setState(
+          {
+            user: res
+          },
+          () => {
+            this.getUsertickets();
+          }
+        );
       });
-  };
-
-  getUsertickets = () => {
-    const id = this.state.user.id;
-    fetch(`http://localhost:3000/users/${id}`)
-      .then(resp => resp.json())
-      .then(resp => {
-        this.setState({
-          ticketInfo: resp.event.complete_user.tickets
-        });
-      })
-      .then(() => console.log(this.state));
   };
 
   createNewEvent = e => {
@@ -100,6 +96,7 @@ export default class Profile extends Component {
           location: ""
         });
         self.fetchMyEvents();
+        // this.props.history.push("/profile")
       });
   };
 
@@ -185,7 +182,19 @@ export default class Profile extends Component {
       update: false
     });
   };
-  render() {
+
+  getUsertickets = () => {
+    const id = this.state.user.id;
+    fetch(`http://localhost:3000/users/${id}`)
+      .then(resp => resp.json())
+      .then(resp => {
+        this.setState({
+          ticketInfo: resp.event.complete_user.tickets
+        });
+      });
+  };
+
+  displayedEvents = () => {
     const {
       events,
       name,
@@ -194,8 +203,11 @@ export default class Profile extends Component {
       location,
       image_url,
       update,
-      user
+      user,
+      ticketInfo,
+      selectedTab
     } = this.state;
+
     let myEvents = [];
     myEvents = events.map((event, key) => (
       <>
@@ -213,6 +225,168 @@ export default class Profile extends Component {
         <br />
       </>
     ));
+
+    let attendingEvents = [];
+    attendingEvents = ticketInfo.map(ticket => (
+      <>
+        <Ticket 
+        ticket_class={ticket.class}
+        description={ticket.description}
+        event_id={ticket.event_id} 
+        price={ticket.price}
+        />
+        <br />
+      </>
+    ));
+
+    let eventForm = [];
+    eventForm = ticketInfo.map(ticket => (
+      <>
+        <EventForm />
+        <br />
+      </>
+    ));
+
+    switch (selectedTab) {
+      case "created":
+        return <div>{myEvents}</div>;
+      case "attending": 
+      return <div>{attendingEvents}</div>; 
+      case "form":
+        return <div><form>
+        <div className="form-group">
+          <input
+            type="text"
+            className="form-control"
+            aria-describedby="emailHelp"
+            placeholder="Name"
+            name="name"
+            value={name}
+            onChange={this.handlechange}
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="text"
+            className="form-control"
+            aria-describedby="emailHelp"
+            placeholder="Location"
+            name="location"
+            value={location}
+            onChange={this.handlechange}
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="date"
+            className="form-control"
+            aria-describedby="emailHelp"
+            placeholder="Time-date"
+            name="date_time"
+            value={date_time}
+            onChange={this.handlechange}
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="text"
+            className="form-control"
+            aria-describedby="emailHelp"
+            placeholder="Description"
+            name="description"
+            value={description}
+            onChange={this.handlechange}
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="text"
+            className="form-control"
+            aria-describedby="emailHelp"
+            placeholder="Image Url"
+            name="image_url"
+            value={image_url}
+            onChange={this.handlechange}
+          />
+        </div>
+        {!update ? (
+          <button
+            className="btn btn-outline-success"
+            onClick={this.createNewEvent}
+          >
+            Create
+          </button>
+        ) : (
+          <span>
+            <button
+              className="btn btn-outline-success"
+              style={{ margin: "1rem" }}
+              onClick={this.updateEvent}
+            >
+              Update
+            </button>
+            <button
+              className="btn btn-outline-success"
+              onClick={this.cancelUpdate}
+            >
+              cancel
+            </button>
+          </span>
+        )}
+      </form></div>;
+      default:
+        return console.log("not worked");
+    }
+  };
+
+  renderMyEvents = () => {
+    this.setState({
+      selectedTab: "created"
+    });
+  };
+
+  renderAttendingEvents = () => {
+    this.setState({
+      selectedTab: "attending"
+    });
+  };
+
+  renderEventForm = () => {
+    this.setState({
+      selectedTab: "form"
+    });
+  };
+
+  render() {
+    const {
+      name,
+      location,
+      user,
+      events,
+      update,
+      date_time,
+      description,
+      image_url
+    } = this.state;
+
+    let myEvents = [];
+    myEvents = events.map(event => (
+      <>
+        <Event
+          name={event.name}
+          location={event.location}
+          description={event.description}
+          datetime={event.date_time}
+          id={event.id}
+          isEdit={true}
+          deleteEvent={this.deleteEvent}
+          updateState={this.updateState}
+          imageurl={this.image_url}
+        />
+        <br />
+      </>
+    ));
+
     return (
       <div>
         <Navbar logout={this.logout} />
@@ -221,13 +395,14 @@ export default class Profile extends Component {
         <div className="container">
           <h2>Welcome! {user && user.username}</h2>
           <p>{user && user.primary_location}</p>
+          <button onClick={this.renderMyEvents}>Hosted Events</button>
+          <button onClick={this.renderAttendingEvents}>My Tickets</button>
+          <button onClick={this.renderEventForm}>Create Event</button>
           <hr />
           <br />
+          {this.displayedEvents()}
           <br />
-          <div>
-            <h4>What events am I going to already?</h4>
-            <button onClick={this.getUsertickets}>Events</button>
-          </div>
+          <div className="row"></div>
           <div className="row">
             <div className="col">
               <h2>My events</h2>
@@ -241,31 +416,80 @@ export default class Profile extends Component {
                     <br />
                     <form>
                       <div className="form-group">
-                        <input type="text" className="form-control" aria-describedby="emailHelp" placeholder="Name" name="name" value={name} onChange={this.handlechange} />
-                      </div>
-                      <div className="form-group">
-                        <input type="text" className="form-control" aria-describedby="emailHelp" placeholder="Location" name="location" value={location} onChange={this.handlechange} />
+                        <input
+                          type="text"
+                          className="form-control"
+                          aria-describedby="emailHelp"
+                          placeholder="Name"
+                          name="name"
+                          value={name}
+                          onChange={this.handlechange}
+                        />
                       </div>
                       <div className="form-group">
                         <input
-                          type="date" className="form-control" aria-describedby="emailHelp" placeholder="Time-date" name="date_time" value={date_time} onChange={this.handlechange} />
+                          type="text"
+                          className="form-control"
+                          aria-describedby="emailHelp"
+                          placeholder="Location"
+                          name="location"
+                          value={location}
+                          onChange={this.handlechange}
+                        />
                       </div>
                       <div className="form-group">
-                        <input type="text" className="form-control" aria-describedby="emailHelp" placeholder="Description" name="description" value={description} onChange={this.handlechange} />
+                        <input
+                          type="date"
+                          className="form-control"
+                          aria-describedby="emailHelp"
+                          placeholder="Time-date"
+                          name="date_time"
+                          value={date_time}
+                          onChange={this.handlechange}
+                        />
                       </div>
                       <div className="form-group">
-                        <input type="text" className="form-control" aria-describedby="emailHelp" placeholder="Image Url" name="image_url" value={image_url} onChange={this.handlechange} />
+                        <input
+                          type="text"
+                          className="form-control"
+                          aria-describedby="emailHelp"
+                          placeholder="Description"
+                          name="description"
+                          value={description}
+                          onChange={this.handlechange}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <input
+                          type="text"
+                          className="form-control"
+                          aria-describedby="emailHelp"
+                          placeholder="Image Url"
+                          name="image_url"
+                          value={image_url}
+                          onChange={this.handlechange}
+                        />
                       </div>
                       {!update ? (
-                        <button className="btn btn-outline-success" onClick={this.createNewEvent} >
+                        <button
+                          className="btn btn-outline-success"
+                          onClick={this.createNewEvent}
+                        >
                           Create
                         </button>
                       ) : (
                         <span>
-                          <button className="btn btn-outline-success" style={{ margin: "1rem" }} onClick={this.updateEvent} >
+                          <button
+                            className="btn btn-outline-success"
+                            style={{ margin: "1rem" }}
+                            onClick={this.updateEvent}
+                          >
                             Update
                           </button>
-                          <button className="btn btn-outline-success" onClick={this.cancelUpdate} >
+                          <button
+                            className="btn btn-outline-success"
+                            onClick={this.cancelUpdate}
+                          >
                             cancel
                           </button>
                         </span>

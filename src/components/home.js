@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Navbar from "./navbar";
 import Event from "./event";
+// import Form from 
 // import EventDetail from "./eventDetail";
 
 export default class Home extends Component {
@@ -57,13 +58,6 @@ export default class Home extends Component {
 
   render() {
     let searchedTerm = this.state.search;
-    // let filteredEvents = this.state.events.filter(event => {
-    // return (
-    // event.name
-    //   .toLocaleLowerCase()
-    //   .indexOf(this.state.search.toLocaleLowerCase()) !== -1
-    // );
-    // });
     const { events } = this.state;
     const all = events.map((event, key) => (
       <Event
