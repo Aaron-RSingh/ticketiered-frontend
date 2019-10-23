@@ -20,3 +20,31 @@
 .App-link {
   color: #09d3ac;
 }
+
+
+.bot-army {
+  overflow-x: scroll;
+  min-height: 300px;
+  max-width: 100%;
+}
+
+.ui.grid > .row.bot-army-row {
+  flex-wrap: nowrap;
+  min-height: 100%;
+}
+
+.ui.grid {
+  padding: 0px 20px;
+}
+
+
+
+#navbar {
+ position: sticky;
+ position: absolute;
+ margin-left: auto;
+ margin-right: auto;
+ position: -webkit-sticky;
+ position: sticky;
+ top: 0;
+}

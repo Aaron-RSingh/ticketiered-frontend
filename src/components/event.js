@@ -9,11 +9,13 @@ export default class Event extends Component {
     new_description: "",
     new_availability: "",
     new_price: "",
-    update: false
+    update: false,
+    date_time: ""
   };
   componentDidMount() {
     const eventId = this.props.id;
     this.fetchAllEventInfo(eventId);
+    this.editDatesInState();
   }
 
   fetchAllEventInfo = id => {
@@ -23,11 +25,23 @@ export default class Event extends Component {
     })
       .then(res => res.json())
       .then(res => {
-        // console.log(res);
         this.setState({
           event: res.event
         });
       });
+  };
+
+  editDatesInState = () => {
+    // debugger
+    // console.log(this.props.date_time.split("T")[0]);
+    // const date = this.props.date_time.split("T")[0];
+    // console.log(this.state);
+    // this.setState({
+    //   date_time: date
+    // });
+    // console.log(this.state);
+    // const {date_time} = this.props.events
+    // this.setState({})
   };
 
   handlechange = e => {
@@ -136,102 +150,205 @@ export default class Event extends Component {
       update: false
     });
   };
+
   render() {
-    const { name, imageurl, description, id, location, isEdit, datetime } = this.props;
-    const { new_ticket_class, new_description, new_availability, new_price, update } = this.state;
+    console.log(this.state);
+    const styles = {
+      fontWeight: "bold"
+    };
+    const {
+      name,
+      image_url,
+      description,
+      id,
+      location,
+      isEdit,
+      date_time
+    } = this.props;
+
+    const {
+      new_ticket_class,
+      new_description,
+      new_availability,
+      new_price,
+      update
+      // date_time
+    } = this.state;
     const { event } = this.state;
 
     return (
       <div className="card">
         <div className="card-header">{name}</div>
         <div className="card-body">
-          <img src={imageurl} key={id} alt="" />
-          <h6 className="card-title">Location: {location}</h6>
-          <h6 className="card-date">Date: {datetime}</h6>
+          <img
+            src={event.image_url}
+            key={id}
+            alt=""
+            style={{ width: "25vw", height: "25vw" }}
+          />
+          <br />
+          <br />
+          <p className="card-title">
+            <b>Location: </b>
+            {location}
+          </p>
+          <p className="card-date">
+            <b>Date:</b> Tomorrow
+          </p>
           <p className="card-text">{description}</p>
-          <Link className="btn btn-outline-success" to={{ pathname: `/eventDetail/${id}` }} >
-            View detail
+          <Link
+            className="btn btn-outline-success"
+            to={{ pathname: `/eventDetail/${id}` }}
+          >
+            View Details
           </Link>
           {isEdit && (
-            <button style={{ margin: "1rem" }} className="btn btn-outline-success my-2 my-sm-0" onClick={e => this.props.updateState(e, id)} >
+            <button
+              style={{ margin: "1rem" }}
+              className="btn btn-outline-success my-2 my-sm-0"
+              onClick={e => this.props.updateState(e, id)}
+            >
               Edit
             </button>
           )}
           {isEdit && (
             <>
-              <button className="btn btn-outline-success my-2 my-sm-0" onClick={e => this.props.deleteEvent(e, id)} >
+              <button
+                className="btn btn-outline-success my-2 my-sm-0"
+                onClick={e => this.props.deleteEvent(e, id)}
+              >
                 Delete
               </button>
               <br />
               <hr />
-              Tickets
+              <h6>Tickets</h6>
               {event.tickets &&
                 event.tickets.map(ticket => {
                   return (
-                    <div className="p-6 mb-2 bg-secondary text-white" style={{ margin: "1rem" }} key={ticket.id} >
-                      Ticket class: {ticket.ticket_class}
-                      <br />
-                      Ticket description: {ticket.description}
-                      <br />
-                      Ticket availability: {ticket.availability}
-                      <br />
-                      Ticket price: £{ticket.price}
-                      <br />
-                      <button style={{ margin: "1rem" }} className="btn btn-bg-info" onClick={e => this.updateState(e, ticket.id)} >
-                        Edit
-                      </button>
-                      <button className="btn btn-bg-info" onClick={e => this.deleteTicket(e, ticket.id)} >
-                        Delete
-                      </button>
+                    <div
+                      className="card p-6 mb-2 bg-secondary text-white"
+                      style={{ margin: "1rem" }}
+                      key={ticket.id}
+                    >
+                      <div className="card-header">
+                        <b>Ticket class: {ticket.ticket_class.toLocaleUpperCase()}</b>
+                      </div>
+                      <div className="card-body">
+                        Ticket description: {ticket.description}
+                        <br />
+                        Ticket availability: {ticket.availability}
+                        <br />
+                        Ticket price: £{ticket.price}
+                        <br />
+                        <button
+                          style={{ margin: "0.5rem" }}
+                          className="btn btn-outline-success"
+                          onClick={e => this.updateState(e, ticket.id)}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          style={{ margin: "0.5rem" }}
+                          className="btn btn-outline-success"
+                          onClick={e => this.deleteTicket(e, ticket.id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
                     </div>
                   );
                 })}
               <hr />
-              {!update ? <h6>Add new</h6> : <h6>Update</h6>}
+              {!update ? <h6>Add New Ticket</h6> : <h6>Update</h6>}
               <div className="container">
                 <div className="row">
                   <div className="col">
                     <div className="form-group">
-                      <input type="text" className="form-control" aria-describedby="emailHelp" placeholder="Ticket Class" name="new_ticket_class" value={new_ticket_class} onChange={this.handlechange} />
+                      <input
+                        type="text"
+                        className="form-control"
+                        aria-describedby="emailHelp"
+                        placeholder="Ticket Class"
+                        name="new_ticket_class"
+                        value={new_ticket_class}
+                        onChange={this.handlechange}
+                      />
                     </div>
                   </div>
                   <div className="col">
                     {" "}
                     <div className="form-group">
-                      <input type="text" className="form-control" aria-describedby="emailHelp" placeholder="Description" name="new_description" value={new_description} onChange={this.handlechange} />
+                      <input
+                        type="text"
+                        className="form-control"
+                        aria-describedby="emailHelp"
+                        placeholder="Description"
+                        name="new_description"
+                        value={new_description}
+                        onChange={this.handlechange}
+                      />
                     </div>
                   </div>
                   <div className="w-100"></div>
                   <div className="col">
                     {" "}
                     <div className="form-group">
-                      <input type="text" className="form-control" aria-describedby="emailHelp" placeholder="Availablilty" name="new_availability" value={new_availability} onChange={this.handlechange} />
+                      <input
+                        type="text"
+                        className="form-control"
+                        aria-describedby="emailHelp"
+                        placeholder="Availablilty"
+                        name="new_availability"
+                        value={new_availability}
+                        onChange={this.handlechange}
+                      />
                     </div>
                   </div>
                   <div className="col">
                     {" "}
                     <div className="form-group">
-                      <input type="text" className="form-control" aria-describedby="emailHelp" placeholder="Price" name="new_price" value={new_price} onChange={this.handlechange} />
+                      <input
+                        type="text"
+                        className="form-control"
+                        aria-describedby="emailHelp"
+                        placeholder="Price"
+                        name="new_price"
+                        value={new_price}
+                        onChange={this.handlechange}
+                      />
                     </div>
                   </div>
                 </div>
               </div>
               {!update ? (
-                <button className="btn btn-outline-primary" onClick={this.addNew} >
+                <button
+                  className="btn btn-outline-primary"
+                  onClick={this.addNew}
+                >
                   Add
                 </button>
               ) : (
                 <>
-                  <button style={{ margin: "1rem" }} className="btn btn-outline-primary" onClick={this.updateTicket} >
+                  <button
+                    style={{ margin: "1rem" }}
+                    className="btn btn-outline-primary"
+                    onClick={this.updateTicket}
+                  >
                     Update
                   </button>
-                  <button className="btn btn-outline-primary" onClick={this.cancelUpdate} >
+                  <button
+                    className="btn btn-outline-primary"
+                    onClick={this.cancelUpdate}
+                  >
                     Cancel
                   </button>
                 </>
               )}
             </>
           )}
+          <br />
+          <br />
+          <br />
         </div>
       </div>
     );

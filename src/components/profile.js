@@ -18,7 +18,7 @@ export default class Profile extends Component {
     tickets: {},
     ticketInfo: [],
     eventsToggle: true,
-    selectedTab: "attending"
+    selectedTab: "created"
   };
   componentDidMount() {
     const token = localStorage.getItem("access_token");
@@ -194,6 +194,32 @@ export default class Profile extends Component {
       });
   };
 
+  displayedHeader = () => {
+    const { selectedTab } = this.state;
+
+    switch (selectedTab) {
+      case "created":
+        return (
+          <div>
+            <h2>Hosting Events</h2>
+          </div>
+        );
+      case "attending":
+        return (
+          <div>
+            <h2>Attending Events</h2>
+          </div>
+        );
+      case "form":
+        return (
+          <div>
+            <h2>Create an event</h2>
+            <p>Give a few details about what the event is about and set a date for it</p>
+          </div>
+        );
+    }
+  };
+
   displayedEvents = () => {
     const {
       events,
@@ -203,7 +229,7 @@ export default class Profile extends Component {
       location,
       image_url,
       update,
-      user,
+      // user,
       ticketInfo,
       selectedTab
     } = this.state;
@@ -220,7 +246,7 @@ export default class Profile extends Component {
           isEdit={true}
           deleteEvent={this.deleteEvent}
           updateState={this.updateState}
-          imageurl={this.image_url}
+          image_url={this.image_url}
         />
         <br />
       </>
@@ -229,11 +255,11 @@ export default class Profile extends Component {
     let attendingEvents = [];
     attendingEvents = ticketInfo.map(ticket => (
       <>
-        <Ticket 
-        ticket_class={ticket.class}
-        description={ticket.description}
-        event_id={ticket.event_id} 
-        price={ticket.price}
+        <Ticket
+          ticket_class={ticket.class}
+          description={ticket.description}
+          event_id={ticket.event_id}
+          price={ticket.price}
         />
         <br />
       </>
@@ -250,90 +276,94 @@ export default class Profile extends Component {
     switch (selectedTab) {
       case "created":
         return <div>{myEvents}</div>;
-      case "attending": 
-      return <div>{attendingEvents}</div>; 
+      case "attending":
+        return <div>{attendingEvents}</div>;
       case "form":
-        return <div><form>
-        <div className="form-group">
-          <input
-            type="text"
-            className="form-control"
-            aria-describedby="emailHelp"
-            placeholder="Name"
-            name="name"
-            value={name}
-            onChange={this.handlechange}
-          />
-        </div>
-        <div className="form-group">
-          <input
-            type="text"
-            className="form-control"
-            aria-describedby="emailHelp"
-            placeholder="Location"
-            name="location"
-            value={location}
-            onChange={this.handlechange}
-          />
-        </div>
-        <div className="form-group">
-          <input
-            type="date"
-            className="form-control"
-            aria-describedby="emailHelp"
-            placeholder="Time-date"
-            name="date_time"
-            value={date_time}
-            onChange={this.handlechange}
-          />
-        </div>
-        <div className="form-group">
-          <input
-            type="text"
-            className="form-control"
-            aria-describedby="emailHelp"
-            placeholder="Description"
-            name="description"
-            value={description}
-            onChange={this.handlechange}
-          />
-        </div>
-        <div className="form-group">
-          <input
-            type="text"
-            className="form-control"
-            aria-describedby="emailHelp"
-            placeholder="Image Url"
-            name="image_url"
-            value={image_url}
-            onChange={this.handlechange}
-          />
-        </div>
-        {!update ? (
-          <button
-            className="btn btn-outline-success"
-            onClick={this.createNewEvent}
-          >
-            Create
-          </button>
-        ) : (
-          <span>
-            <button
-              className="btn btn-outline-success"
-              style={{ margin: "1rem" }}
-              onClick={this.updateEvent}
-            >
-              Update
-            </button>
-            <button
-              className="btn btn-outline-success"
-              onClick={this.cancelUpdate}
-            >
-              cancel
-            </button>
-          </span>
-        )}
-      </form></div>;
+        return (
+          <div>
+            <form>
+              <div className="form-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  aria-describedby="emailHelp"
+                  placeholder="Name"
+                  name="name"
+                  value={name}
+                  onChange={this.handlechange}
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  aria-describedby="emailHelp"
+                  placeholder="Location"
+                  name="location"
+                  value={location}
+                  onChange={this.handlechange}
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="date"
+                  className="form-control"
+                  aria-describedby="emailHelp"
+                  placeholder="Time-date"
+                  name="date_time"
+                  value={date_time}
+                  onChange={this.handlechange}
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  aria-describedby="emailHelp"
+                  placeholder="Description"
+                  name="description"
+                  value={description}
+                  onChange={this.handlechange}
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  aria-describedby="emailHelp"
+                  placeholder="Image Url"
+                  name="image_url"
+                  value={image_url}
+                  onChange={this.handlechange}
+                />
+              </div>
+              {!update ? (
+                <button
+                  className="btn btn-outline-success"
+                  onClick={this.createNewEvent}
+                >
+                  Create
+                </button>
+              ) : (
+                <span>
+                  <button
+                    className="btn btn-outline-success"
+                    style={{ margin: "1rem" }}
+                    onClick={this.updateEvent}
+                  >
+                    Update
+                  </button>
+                  <button
+                    className="btn btn-outline-success"
+                    onClick={this.cancelUpdate}
+                  >
+                    cancel
+                  </button>
+                </span>
+              )}
+            </form>
+          </div>
+        );
       default:
         return console.log("not worked");
     }
@@ -343,45 +373,49 @@ export default class Profile extends Component {
     this.setState({
       selectedTab: "created"
     });
+    console.log(this.state.selectedTab);
   };
 
   renderAttendingEvents = () => {
     this.setState({
       selectedTab: "attending"
     });
+    console.log(this.state.selectedTab);
   };
 
-  renderEventForm = () => {
+  renderEventForm = e => {
     this.setState({
       selectedTab: "form"
     });
+    console.log(this.state.selectedTab);
   };
 
   render() {
     const {
-      name,
-      location,
+      // name,
+      // location,
       user,
       events,
-      update,
-      date_time,
-      description,
-      image_url
+      // update,
+      date_time
+      // description,
+      // image_url
+      // selectedTab
     } = this.state;
-
+    
     let myEvents = [];
     myEvents = events.map(event => (
       <>
         <Event
-          name={event.name}
-          location={event.location}
-          description={event.description}
           datetime={event.date_time}
-          id={event.id}
-          isEdit={true}
           deleteEvent={this.deleteEvent}
+          description={event.description}
+          id={event.id}
+          image_url={event.image_url}
+          isEdit={true}
+          location={event.location}
+          name={event.name}
           updateState={this.updateState}
-          imageurl={this.image_url}
         />
         <br />
       </>
@@ -395,114 +429,49 @@ export default class Profile extends Component {
         <div className="container">
           <h2>Welcome! {user && user.username}</h2>
           <p>{user && user.primary_location}</p>
-          <button onClick={this.renderMyEvents}>Hosted Events</button>
-          <button onClick={this.renderAttendingEvents}>My Tickets</button>
-          <button onClick={this.renderEventForm}>Create Event</button>
+          <button
+            className={
+              this.state.selectedTab === "created"
+                ? "btn btn-outline-success"
+                : "btn btn-outline-success my-2 my-sm-0"
+            }
+            onClick={this.renderMyEvents}
+          >
+            Hosted Events
+          </button>
+          <button
+            className={
+              this.state.selectedTab === "attending"
+                ? "btn btn-outline-success"
+                : "btn btn-outline-success my-2 my-sm-0"
+            }
+            onClick={this.renderAttendingEvents}
+          >
+            My Tickets
+          </button>
+          <button
+            className={
+              this.state.selectedTab === "form"
+                ? "btn btn-outline-success"
+                : "btn btn-outline-success my-2 my-sm-0"
+            }
+            onClick={e => {
+              this.renderEventForm(e);
+            }}
+          >
+            Create Event
+          </button>
           <hr />
           <br />
+          {this.displayedHeader()}
           {this.displayedEvents()}
           <br />
           <div className="row"></div>
-          <div className="row">
-            <div className="col">
-              <h2>My events</h2>
-              {myEvents.length ? myEvents : <h5>No events yet</h5>}
-            </div>
-            <div className="col">
-              <div className="container">
-                <div className="row">
-                  <div className="col">
-                    {!update ? <h3>Create An Event!</h3> : <h3>Update form</h3>}
-                    <br />
-                    <form>
-                      <div className="form-group">
-                        <input
-                          type="text"
-                          className="form-control"
-                          aria-describedby="emailHelp"
-                          placeholder="Name"
-                          name="name"
-                          value={name}
-                          onChange={this.handlechange}
-                        />
-                      </div>
-                      <div className="form-group">
-                        <input
-                          type="text"
-                          className="form-control"
-                          aria-describedby="emailHelp"
-                          placeholder="Location"
-                          name="location"
-                          value={location}
-                          onChange={this.handlechange}
-                        />
-                      </div>
-                      <div className="form-group">
-                        <input
-                          type="date"
-                          className="form-control"
-                          aria-describedby="emailHelp"
-                          placeholder="Time-date"
-                          name="date_time"
-                          value={date_time}
-                          onChange={this.handlechange}
-                        />
-                      </div>
-                      <div className="form-group">
-                        <input
-                          type="text"
-                          className="form-control"
-                          aria-describedby="emailHelp"
-                          placeholder="Description"
-                          name="description"
-                          value={description}
-                          onChange={this.handlechange}
-                        />
-                      </div>
-                      <div className="form-group">
-                        <input
-                          type="text"
-                          className="form-control"
-                          aria-describedby="emailHelp"
-                          placeholder="Image Url"
-                          name="image_url"
-                          value={image_url}
-                          onChange={this.handlechange}
-                        />
-                      </div>
-                      {!update ? (
-                        <button
-                          className="btn btn-outline-success"
-                          onClick={this.createNewEvent}
-                        >
-                          Create
-                        </button>
-                      ) : (
-                        <span>
-                          <button
-                            className="btn btn-outline-success"
-                            style={{ margin: "1rem" }}
-                            onClick={this.updateEvent}
-                          >
-                            Update
-                          </button>
-                          <button
-                            className="btn btn-outline-success"
-                            onClick={this.cancelUpdate}
-                          >
-                            cancel
-                          </button>
-                        </span>
-                      )}
-                    </form>
-                  </div>
-                  <div className="col-sm"></div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* This is where I took out the untitled-1 file */}
         </div>
       </div>
     );
   }
 }
+
+// {this.state.selectedTab === "attending" ? "btn btn-outline-success" : "btn btn-outline-success my-2 my-sm-0"}

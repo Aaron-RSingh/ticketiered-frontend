@@ -10,7 +10,7 @@ export default class EventDetail extends Component {
   componentDidMount() {
     const token = localStorage.getItem("access_token");
     if (!token) {
-      // this.props.history.push('/login')
+      // this.props.history.push('/profile')
     }
     const eventId = this.props.match.params.id;
     this.fetchEventDetail(eventId);
@@ -30,7 +30,6 @@ export default class EventDetail extends Component {
     })
       .then(res => res.json())
       .then(res => {
-        console.log(res);
         this.setState({
           event: res.event
         });
@@ -38,19 +37,16 @@ export default class EventDetail extends Component {
   };
 
   fetchAllTickets = id => {
-    console.log(this.props);
     const token = localStorage.getItem("access_token");
     fetch(`http://localhost:3000/events/${id}`, {
       headers: { Authorization: `bearer ${token}` }
     })
       .then(res => res.json())
       .then(res => {
-        console.log(res);
       });
   };
 
   createUserTicket = ticket_id => {
-    console.log(ticket_id);
     fetch("http://localhost:3000/usertickets", {
       method: "POST",
       body: JSON.stringify({ ticket_id }),
@@ -60,11 +56,15 @@ export default class EventDetail extends Component {
       }
     })
       .then(resp => resp.json())
-      .then(resp => console.log(resp));
+      // .then(resp => console.log(resp));
+      .then(this.props.history.push("/profile"));
   };
 
   render() {
     const { event } = this.state;
+    console.log(event);
+    // const { date } = event.date_time.split("T")[0];
+    // console.log(date);
     return (
       <div>
         <Navbar logout={this.logout} />
@@ -73,12 +73,13 @@ export default class EventDetail extends Component {
         <br />
         <div className="container">
           <div className="row">
-            <div className="col-md-4">
+            <div /*className="col-md-4" */>
               {event && (
                 <img
                   src={event.image_url}
                   alt="12"
-                  style={{ float: "right" }}
+                  /* style={{ float: "right" }} */
+                  style={{ width: "25vw", height: "25vw" }}
                 />
               )}
             </div>
@@ -88,9 +89,9 @@ export default class EventDetail extends Component {
                   <h3>
                     <strong>{event.name}</strong>
                   </h3>
-                  <h4>Description: {event.description}</h4>
                   <h4>Location: {event.location}</h4>
                   <h4>Date time: {event.date_time}</h4>
+                  <h5>Description: {event.description}</h5>
                   <hr />
                 </>
               )}

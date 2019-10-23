@@ -50,7 +50,8 @@ export default class Login extends Component {
             <br />
             <br />
             <h1>Ticketiered</h1>
-            <p>blurb about what the app is</p>
+            <p>Explore millions of events local or not, real or fake and snap a ticket for a lonely coffee or front row seats to Sesame Street the Animated Musical when you sign up!</p>
+            <p>The Flatiron offer also lets you reserve any tickets for free on any odd, even or Saturday of the Month! Yes, thats today!!  </p>
             <Link to="/signup" className="btn btn-outline-success">
               Sign up
             </Link>
@@ -85,7 +86,7 @@ export default class Login extends Component {
                 />
               </div>
               <button className="btn btn-outline-success" onClick={this.login}>
-                Sign In
+                Login
               </button>
             </form>
           </div>

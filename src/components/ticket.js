@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 export default class Ticket extends Component {
   state = {
@@ -54,7 +54,6 @@ export default class Ticket extends Component {
           <div className="card-header">
             Event: {this.getEventName(event_id)}{" "}
           </div>
-          {/* {this.getEvent(event_id)}</div> */}
           <div className="card-body">
             Ticket Tier: {ticket_class}
             <br />

@@ -5,7 +5,7 @@ export default class Navbar extends Component {
   render() {
     return (
       <nav className="navbar navbar-light bg-light">
-        <Link className="navbar-brand" to="/">
+        <Link className="btn btn-outline-success my-2 my-sm-0" to="/">
           Home
         </Link>
         <form className="form-inline my-2 my-lg-0">

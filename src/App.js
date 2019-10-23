@@ -8,6 +8,10 @@ import Profile from "./components/profile";
 import EventDetail from "./components/eventDetail";
 
 class App extends React.Component {
+  componentDidMount = () => {
+    document.title = "Ticketiered";
+  };
+
   register = () => {
     fetch("http://localhost:3000/signup", {
       username: "moose1",
@@ -36,7 +40,7 @@ class App extends React.Component {
       });
   };
   logout = () => {
-    const token = localStorage.getItem("access_token");
+    // const token = localStorage.getItem("access_token");
     fetch("http://localhost:3000/events")
       .then(res => res.json())
       .then(res => {

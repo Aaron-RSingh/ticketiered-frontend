@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Navbar from "./navbar";
 import Event from "./event";
-// import Form from 
+// import Form from
 // import EventDetail from "./eventDetail";
 
 export default class Home extends Component {
@@ -64,8 +64,9 @@ export default class Home extends Component {
         name={event.name}
         location={event.location}
         description={event.description}
+        date_time={event.date_time}
         id={event.id}
-        imageurl={event.image_url}
+        image_url={event.image_url}
       />
     ));
 
@@ -82,10 +83,18 @@ export default class Home extends Component {
             value={this.state.search}
             onChange={e => this.updateSearch(e)}
           />
-          <button onClick={() => this.getFilteredEvents(searchedTerm)}>
+          <button
+            className="btn btn-outline-success my-2 my-sm-0"
+            onClick={() => this.getFilteredEvents(searchedTerm)}
+          >
             Search
           </button>
-          <button onClick={this.getEvents}>Reset Filter</button>
+          <button
+            className="btn btn-outline-success my-2 my-sm-0"
+            onClick={this.getEvents}
+          >
+            Reset Filter
+          </button>
           {all}
         </div>
       </div>
